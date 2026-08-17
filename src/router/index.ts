@@ -1,26 +1,36 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-
-const routes: Array<RouteRecordRaw> = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-  },
-];
+import AlbumView from "../views/AlbumView.vue";
+import NewView from "../views/NewView.vue";
+import PlaylistView from "../views/PlaylistView.vue";
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes,
+  scrollBehavior() {
+    return { top: 0 };
+  },
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: HomeView,
+    },
+    {
+      path: "/new",
+      name: "new",
+      component: NewView,
+    },
+    {
+      path: "/playlist",
+      name: "playlist",
+      component: PlaylistView,
+    },
+    {
+      path: "/albums/one-more-city",
+      name: "one-more-city",
+      component: AlbumView,
+    },
+  ],
 });
 
 export default router;
