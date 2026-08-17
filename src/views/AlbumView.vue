@@ -111,7 +111,7 @@ const handleAudioError = () => {
 </script>
 
 <template>
-  <section class="px-6 pb-24 pt-10 sm:px-10 lg:px-16 lg:pt-16">
+  <section class="px-6 pb-48 pt-10 sm:px-10 md:pb-24 lg:px-16 lg:pt-16">
     <div class="mx-auto max-w-7xl">
       <RouterLink
         to="/"

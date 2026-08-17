@@ -127,7 +127,7 @@ const handleAudioError = () => {
 
 <template>
   <section
-    class="mx-auto min-h-[70vh] max-w-7xl px-6 py-16 pb-28 sm:px-10 lg:px-16"
+    class="mx-auto min-h-[70vh] max-w-7xl px-6 py-16 pb-48 sm:px-10 md:pb-28 lg:px-16"
   >
     <h1 class="text-4xl font-black uppercase tracking-tight sm:text-6xl">
       Мой плейлист
