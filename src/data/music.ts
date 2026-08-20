@@ -14,12 +14,12 @@ export const albums: Album[] = [
     title: "Tragic city",
     year: "2017",
     art: tragicCityArt,
-    link: "/albums/one-more-city",
+    link: "/albums/tragic-city",
   },
   {
     title: "Magic city",
     year: "2015",
     art: magicCityArt,
-    link: "/albums/one-more-city",
+    link: "/albums/magic-city",
   },
 ];

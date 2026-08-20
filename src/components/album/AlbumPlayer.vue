@@ -4,6 +4,7 @@ import type { AlbumTrack } from "@/types/music";
 defineProps<{
   track: AlbumTrack;
   art: string;
+  albumTitle: string;
   isPlaying: boolean;
   currentTime: number;
   duration: number;
@@ -47,7 +48,7 @@ const formatTime = (seconds: number) => {
           {{
             usingPlaceholder
               ? "Демонстрационная заглушка"
-              : "ЛСП · One More City"
+              : `ЛСП · ${albumTitle}`
           }}
         </p>
       </div>

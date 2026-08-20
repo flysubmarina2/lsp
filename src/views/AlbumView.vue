@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
-import albumArt from "@/assets/albums/One_More_City.jpg";
+import { computed, nextTick, ref, watch } from "vue";
 import AlbumHero from "@/components/album/AlbumHero.vue";
 import AlbumPlayer from "@/components/album/AlbumPlayer.vue";
 import AlbumTrackList from "@/components/album/AlbumTrackList.vue";
-import { oneMoreCityTracks } from "@/data/oneMoreCity";
+import { albumPages } from "@/data/albumPages";
 import { usePlaylist } from "@/composables/usePlaylist";
+import type { AlbumTrack } from "@/types/music";
 
-const { playlist, toggleTrack } = usePlaylist();
+const props = defineProps<{ albumSlug: string }>();
+const { playlist, isSaved, toggleTrack } = usePlaylist();
+const album = computed(() => albumPages[props.albumSlug]);
 
 const audio = ref<HTMLAudioElement | null>(null);
 const currentTrackIndex = ref(0);
@@ -19,11 +21,26 @@ const isPlayerVisible = ref(false);
 const usingPlaceholder = ref(false);
 const shouldResumePlayback = ref(false);
 
-const currentTrack = computed(() => oneMoreCityTracks[currentTrackIndex.value]);
+const currentTrack = computed(
+  () => album.value.tracks[currentTrackIndex.value]
+);
+const playlistTrack = computed(() => ({
+  ...currentTrack.value,
+  albumSlug: album.value.slug,
+  albumTitle: album.value.title,
+  art: album.value.art,
+}));
+const savedTrackFiles = computed(() =>
+  playlist.value
+    .filter(
+      (track) => (track.albumSlug || "one-more-city") === album.value.slug
+    )
+    .map((track) => track.file)
+);
 const currentSource = computed(() =>
   usingPlaceholder.value
     ? "/audio/one-more-city/placeholder.mp3"
-    : `/audio/one-more-city/${currentTrack.value.file}`
+    : `/audio/${album.value.slug}/${currentTrack.value.file}`
 );
 
 const play = async () => {
@@ -75,7 +92,7 @@ const selectTrack = (index: number) => {
 
 const playNext = () => {
   currentTrackIndex.value =
-    (currentTrackIndex.value + 1) % oneMoreCityTracks.length;
+    (currentTrackIndex.value + 1) % album.value.tracks.length;
   loadCurrentTrack();
 };
 
@@ -85,8 +102,8 @@ const playPrevious = () => {
     return;
   }
   currentTrackIndex.value =
-    (currentTrackIndex.value - 1 + oneMoreCityTracks.length) %
-    oneMoreCityTracks.length;
+    (currentTrackIndex.value - 1 + album.value.tracks.length) %
+    album.value.tracks.length;
   loadCurrentTrack();
 };
 
@@ -108,6 +125,25 @@ const handleAudioError = () => {
     if (shouldResumePlayback.value) void play();
   });
 };
+
+const togglePlaylistTrack = (track: AlbumTrack) => {
+  toggleTrack({
+    ...track,
+    albumSlug: album.value.slug,
+    albumTitle: album.value.title,
+    art: album.value.art,
+  });
+};
+
+watch(
+  () => props.albumSlug,
+  () => {
+    audio.value?.pause();
+    currentTrackIndex.value = 0;
+    isPlayerVisible.value = false;
+    usingPlaceholder.value = false;
+  }
+);
 </script>
 
 <template>
@@ -119,33 +155,41 @@ const handleAudioError = () => {
       >
         ← Назад к дискографии
       </RouterLink>
-      <AlbumHero :art="albumArt" @play="selectTrack(0)" />
+      <AlbumHero
+        :art="album.art"
+        :title="album.title"
+        :year="album.year"
+        :description="album.description"
+        @play="selectTrack(0)"
+      />
       <AlbumTrackList
-        :tracks="oneMoreCityTracks"
-        :art="albumArt"
+        :tracks="album.tracks"
+        :art="album.art"
+        :title="album.title"
         :current-track-index="currentTrackIndex"
         :is-playing="isPlaying"
-        :saved-track-files="playlist.map((track) => track.file)"
+        :saved-track-files="savedTrackFiles"
         @select="selectTrack"
-        @toggle-save="toggleTrack"
+        @toggle-save="togglePlaylistTrack"
       />
     </div>
 
     <AlbumPlayer
       v-if="isPlayerVisible"
       :track="currentTrack"
-      :art="albumArt"
+      :art="album.art"
+      :album-title="album.title"
       :is-playing="isPlaying"
       :current-time="currentTime"
       :duration="audioDuration"
       :using-placeholder="usingPlaceholder"
       :message="playbackMessage"
-      :is-saved="playlist.some((track) => track.file === currentTrack.file)"
+      :is-saved="isSaved(playlistTrack)"
       @toggle="togglePlayback"
       @previous="playPrevious"
       @next="playNext"
       @seek="seek"
-      @toggle-save="toggleTrack(currentTrack)"
+      @toggle-save="togglePlaylistTrack(currentTrack)"
       @close="closePlayer"
     />
 

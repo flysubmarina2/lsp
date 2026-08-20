@@ -1,5 +1,10 @@
 <script setup lang="ts">
-defineProps<{ art: string }>();
+defineProps<{
+  art: string;
+  title: string;
+  year: string;
+  description: string;
+}>();
 defineEmits<{ (event: "play"): void }>();
 </script>
 
@@ -9,20 +14,18 @@ defineEmits<{ (event: "play"): void }>();
   >
     <img
       :src="art"
-      alt="Обложка альбома One More City"
+      :alt="`Обложка альбома ${title}`"
       class="aspect-square w-full rounded-[2rem] object-cover shadow-2xl shadow-black/25"
     />
     <div class="flex flex-col justify-center">
       <p class="text-xs font-bold uppercase tracking-[0.3em] text-black/50">
-        Альбом · 2020
+        Альбом · {{ year }}
       </p>
       <h1 class="mt-3 text-5xl font-black uppercase tracking-tight sm:text-7xl">
-        One More City
+        {{ title }}
       </h1>
       <p class="mt-6 max-w-2xl text-base leading-7 text-black/65">
-        Пятый студийный альбом белорусского музыкального проекта ЛСП, вышедший
-        18 сентября 2020 года. Является продолжением линейки City, в которую
-        также входят альбомы Magic City и Tragic City.
+        {{ description }}
       </p>
       <button
         type="button"

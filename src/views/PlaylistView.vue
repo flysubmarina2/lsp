@@ -22,7 +22,9 @@ const currentSource = computed(() => {
   if (!currentTrack.value) return "";
   return usingPlaceholder.value
     ? "/audio/one-more-city/placeholder.mp3"
-    : `/audio/one-more-city/${currentTrack.value.file}`;
+    : `/audio/${currentTrack.value.albumSlug || "one-more-city"}/${
+        currentTrack.value.file
+      }`;
 });
 
 const play = async () => {
@@ -98,7 +100,10 @@ const seek = (time: number) => {
 
 const removeSavedTrack = (track: AlbumTrack) => {
   const removedIndex = playlist.value.findIndex(
-    (item) => item.file === track.file
+    (item) =>
+      item.file === track.file &&
+      (item.albumSlug || "one-more-city") ===
+        (track.albumSlug || "one-more-city")
   );
   removeTrack(track);
   if (!playlist.value.length) {
@@ -151,6 +156,7 @@ const handleAudioError = () => {
       v-else
       :tracks="playlist"
       :art="albumArt"
+      title="Сохранённые треки"
       :current-track-index="currentTrackIndex"
       :is-playing="isPlaying"
       :saved-track-files="playlist.map((track) => track.file)"
@@ -161,7 +167,8 @@ const handleAudioError = () => {
     <AlbumPlayer
       v-if="isPlayerVisible && currentTrack"
       :track="currentTrack"
-      :art="albumArt"
+      :art="currentTrack.art || albumArt"
+      :album-title="currentTrack.albumTitle || 'One More City'"
       :is-playing="isPlaying"
       :current-time="currentTime"
       :duration="audioDuration"

@@ -29,6 +29,19 @@ const router = createRouter({
       path: "/albums/one-more-city",
       name: "one-more-city",
       component: AlbumView,
+      props: { albumSlug: "one-more-city" },
+    },
+    {
+      path: "/albums/tragic-city",
+      name: "tragic-city",
+      component: AlbumView,
+      props: { albumSlug: "tragic-city" },
+    },
+    {
+      path: "/albums/magic-city",
+      name: "magic-city",
+      component: AlbumView,
+      props: { albumSlug: "magic-city" },
     },
   ],
 });

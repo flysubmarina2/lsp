@@ -4,6 +4,7 @@ import type { AlbumTrack } from "@/types/music";
 defineProps<{
   tracks: AlbumTrack[];
   art: string;
+  title: string;
   currentTrackIndex: number;
   isPlaying: boolean;
   savedTrackFiles?: string[];
@@ -17,7 +18,7 @@ defineEmits<{
 <template>
   <div class="mt-20">
     <!-- <h2 class="text-3xl font-black uppercase tracking-tight sm:text-5xl">
-      One more city
+      {{ title }}
     </h2> -->
     <ol class="mt-8 border-t border-black/20">
       <li
@@ -42,7 +43,7 @@ defineEmits<{
               : String(index + 1).padStart(2, "0")
           }}</span>
           <img
-            :src="art"
+            :src="track.art || art"
             alt=""
             class="h-14 w-14 rounded-lg object-cover shadow-sm"
           />
